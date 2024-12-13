@@ -56,4 +56,15 @@ defmodule Day05Test do
   test "part 1" do
     assert Day05.part1("input.txt") == 4774
   end
+
+  test "fix_updates/1" do
+    %{rules: rules, updates: _updates} = Day05.process_input("example.txt")
+    assert Day05.fix_updates(rules, [75, 97, 47, 61, 53]) == [97, 75, 47, 61, 53]
+    assert Day05.fix_updates(rules, [61, 13, 29]) == [61, 29, 13]
+    assert Day05.fix_updates(rules, [97, 13, 75, 29, 47]) == [97, 75, 47, 29, 13]
+  end
+
+  test "part 2 example" do
+    assert Day05.part2("example.txt") == 123
+  end
 end

@@ -8,10 +8,37 @@ defmodule Day05 do
     Enum.filter(updates, fn update ->
       updates_in_order?(rules, update)
     end)
-    |> Enum.map(fn update ->
-      Enum.at(update, floor(length(update) / 2))
-    end)
+    |> get_middle()
     |> Enum.sum()
+  end
+
+  def part2(path) do
+    %{rules: rules, updates: updates} = process_input(path)
+
+    rejected = Enum.reject(updates, fn update ->
+      updates_in_order?(rules, update)
+    end)
+
+    fix_updates(rules, rejected)
+    |> get_middle()
+    |> Enum.sum()
+  end
+
+  def fix_updates(rules, updates, new_updates \\ [])
+  def fix_updates(_rules, [], new_updates) do
+    Enum.reject(new_updates, fn u -> is_nil(u) end)# |> Enum.uniq()
+  end
+  def fix_updates(rules, [head | tail], new_updates) do
+    next = Enum.at(tail, 0)
+
+    result =
+      cond do
+        is_nil(next) -> [head, nil]
+        Enum.member?(rules, {head, next}) -> [head, next]
+        true -> [next, head]
+      end
+      |> dbg(charlists: :as_lists)
+    fix_updates(rules, tail, new_updates ++ result)
   end
 
   def updates_in_order?(_rules, []), do: true
@@ -50,5 +77,11 @@ defmodule Day05 do
       end)
 
     %{rules: rules, updates: updates}
+  end
+
+  defp get_middle(updates) do
+    Enum.map(updates, fn update ->
+      Enum.at(update, floor(length(update) / 2))
+    end)
   end
 end
