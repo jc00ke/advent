@@ -5,10 +5,8 @@ defmodule Day05 do
   def part1(path) do
     %{rules: rules, updates: updates} = process_input(path)
 
-    rules_graph = graph(rules)
-
     Enum.filter(updates, fn update ->
-      updates_in_order?(rules_graph, update)
+      updates_in_order?(rules, update)
     end)
     |> Enum.map(fn update ->
       Enum.at(update, floor(length(update) / 2))
@@ -16,24 +14,13 @@ defmodule Day05 do
     |> Enum.sum()
   end
 
-  def graph(rules) do
-    Enum.reduce(rules, :digraph.new(), fn {l, r}, g ->
-      _vl = :digraph.add_vertex(g, l)
-      _vr = :digraph.add_vertex(g, r)
-      :digraph.add_edge(g, l, r)
-      g
-    end)
-  end
+  def updates_in_order?(_rules, []), do: true
 
-  def updates_in_order?(graph, [head | tail]) do
+  def updates_in_order?(rules, [head | tail]) do
     next = Enum.at(tail, 0)
-    path = :digraph.get_path(graph, head, next)
 
-    cond do
-      is_nil(next) -> true
-      is_list(path) -> updates_in_order?(graph, tail)
-      path == false -> false
-      true -> false
+    if is_nil(next) || Enum.member?(rules, {head, next}) do
+      updates_in_order?(rules, tail)
     end
   end
 

@@ -41,13 +41,12 @@ defmodule Day05Test do
 
   test "updates_in_order?/1" do
     %{rules: rules, updates: _updates} = Day05.process_input("example.txt")
-    graph = Day05.graph(rules)
-    assert Day05.updates_in_order?(graph, [75, 47, 61, 53, 29])
-    assert Day05.updates_in_order?(graph, [97, 61, 53, 29, 13])
-    assert Day05.updates_in_order?(graph, [75, 29, 13])
-    refute Day05.updates_in_order?(graph, [75, 97, 47, 61, 53])
-    refute Day05.updates_in_order?(graph, [61, 13, 29])
-    refute Day05.updates_in_order?(graph, [97, 13, 75, 29, 47])
+    assert Day05.updates_in_order?(rules, [75, 47, 61, 53, 29])
+    assert Day05.updates_in_order?(rules, [97, 61, 53, 29, 13])
+    assert Day05.updates_in_order?(rules, [75, 29, 13])
+    refute Day05.updates_in_order?(rules, [75, 97, 47, 61, 53])
+    refute Day05.updates_in_order?(rules, [61, 13, 29])
+    refute Day05.updates_in_order?(rules, [97, 13, 75, 29, 47])
   end
 
   test "part 1 example" do
@@ -55,6 +54,6 @@ defmodule Day05Test do
   end
 
   test "part 1" do
-    assert Day05.part1("input.txt") < 11117
+    assert Day05.part1("input.txt") == 4774
   end
 end
