@@ -40,7 +40,8 @@ defmodule Day05Test do
   end
 
   test "updates_in_order?/1" do
-    graph = Day05.part1("example.txt")
+    %{rules: rules, updates: _updates} = Day05.process_input("example.txt")
+    graph = Day05.graph(rules)
     assert Day05.updates_in_order?(graph, [75, 47, 61, 53, 29])
     assert Day05.updates_in_order?(graph, [97, 61, 53, 29, 13])
     assert Day05.updates_in_order?(graph, [75, 29, 13])
@@ -50,7 +51,10 @@ defmodule Day05Test do
   end
 
   test "part 1 example" do
-    # assert Day05.part1("example.txt") == 143
-    Day05.part1("input.txt") |> dbg()
+    assert Day05.part1("example.txt") == 143
+  end
+
+  test "part 1" do
+    assert Day05.part1("input.txt") < 11117
   end
 end

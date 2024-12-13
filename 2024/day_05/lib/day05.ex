@@ -2,17 +2,10 @@ defmodule Day05 do
   @moduledoc """
   Documentation for `Day05`.
   """
-
   def part1(path) do
-    %{rules: rules, updates: updates} = process_input(path) |> dbg()
+    %{rules: rules, updates: updates} = process_input(path)
 
-    rules_graph =
-      Enum.reduce(rules, :digraph.new([:acyclic]), fn {l, r}, g ->
-        vl = :digraph.add_vertex(g, l)
-        vr = :digraph.add_vertex(g, r)
-        :digraph.add_edge(g, vl, vr)
-        g
-      end)
+    rules_graph = graph(rules)
 
     Enum.filter(updates, fn update ->
       updates_in_order?(rules_graph, update)
@@ -21,7 +14,15 @@ defmodule Day05 do
       Enum.at(update, floor(length(update) / 2))
     end)
     |> Enum.sum()
-    |> dbg()
+  end
+
+  def graph(rules) do
+    Enum.reduce(rules, :digraph.new(), fn {l, r}, g ->
+      _vl = :digraph.add_vertex(g, l)
+      _vr = :digraph.add_vertex(g, r)
+      :digraph.add_edge(g, l, r)
+      g
+    end)
   end
 
   def updates_in_order?(graph, [head | tail]) do
@@ -32,7 +33,7 @@ defmodule Day05 do
       is_nil(next) -> true
       is_list(path) -> updates_in_order?(graph, tail)
       path == false -> false
-      true -> true
+      true -> false
     end
   end
 
