@@ -67,4 +67,8 @@ defmodule Day05Test do
   test "part 2 example" do
     assert Day05.part2("example.txt") == 123
   end
+
+  test "part 2" do
+    assert Day05.part2("input.txt") == 6004
+  end
 end

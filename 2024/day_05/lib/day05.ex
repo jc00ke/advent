@@ -15,30 +15,20 @@ defmodule Day05 do
   def part2(path) do
     %{rules: rules, updates: updates} = process_input(path)
 
-    rejected = Enum.reject(updates, fn update ->
-      updates_in_order?(rules, update)
-    end)
+    rejected =
+      Enum.reject(updates, fn update ->
+        updates_in_order?(rules, update)
+      end)
 
-    fix_updates(rules, rejected)
+    Enum.map(rejected, fn r -> fix_updates(rules, r) end)
     |> get_middle()
     |> Enum.sum()
   end
 
-  def fix_updates(rules, updates, new_updates \\ [])
-  def fix_updates(_rules, [], new_updates) do
-    Enum.reject(new_updates, fn u -> is_nil(u) end)# |> Enum.uniq()
-  end
-  def fix_updates(rules, [head | tail], new_updates) do
-    next = Enum.at(tail, 0)
-
-    result =
-      cond do
-        is_nil(next) -> [head, nil]
-        Enum.member?(rules, {head, next}) -> [head, next]
-        true -> [next, head]
-      end
-      |> dbg(charlists: :as_lists)
-    fix_updates(rules, tail, new_updates ++ result)
+  def fix_updates(rules, updates) do
+    Enum.sort(updates, fn l, r ->
+      Enum.member?(rules, {l, r})
+    end)
   end
 
   def updates_in_order?(_rules, []), do: true
