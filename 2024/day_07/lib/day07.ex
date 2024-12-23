@@ -8,16 +8,17 @@ defmodule Day07 do
       end)
       |> Enum.sum()
     end)
-
-    # |> dbg(charlists: :as_lists)
   end
 
-  def test_operators({test_value, numbers}) do
-    Enum.any?([
-      Enum.sum(numbers) == test_value,
-      Enum.product(numbers) == test_value
-      # test_operators(numbers, test_value)
-    ])
+  def test_operators({test_value,  numbers}) do
+    operators(numbers)
+    |> Enum.any?(fn ops -> eval_ops(numbers, ops) == test_value end)
+  end
+
+  def eval_ops([result], []), do: result
+  def eval_ops([a, b | rest], [op | ops]) do
+    result = apply(Kernel, op, [a, b])
+    eval_ops([result] ++ rest, ops)
   end
 
   def operators(numbers) do
