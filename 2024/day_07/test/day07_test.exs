@@ -6,6 +6,10 @@ defmodule Day07Test do
     assert Day07.part1("example.txt") == 3749
   end
 
+  test "part 1" do
+    assert Day07.part1("input.txt") == 6_083_020_304_036 
+  end
+
   test "test_operators/1" do
     assert Day07.test_operators({190, [10, 19]})
     assert Day07.test_operators({3267, [81, 40, 27]})
