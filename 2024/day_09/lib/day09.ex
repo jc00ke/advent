@@ -1,10 +1,18 @@
 defmodule Day09 do
+  require Logger
   @dot "."
   def part1(path) do
     process(path)
     |> id()
     |> compact()
     |> filesystem_checksum()
+  end
+
+  def part1_timed(path) do
+    {duration, result} = :timer.tc(fn -> part1(path) end)
+    took = Float.round(duration / 1000000, 4)
+    Logger.info("Took #{took} seconds")
+    result
   end
 
   def id(disk_map) do
@@ -18,67 +26,57 @@ defmodule Day09 do
       Enum.map(files, fn {file_block, file_index} ->
         Stream.repeatedly(fn -> round(file_index / 2) end)
         |> Enum.take(file_block)
-        |> Enum.join()
       end)
 
     dots =
       Enum.map(free_space, fn {file_block, _file_index} ->
-        Stream.repeatedly(fn -> @dot end) |> Enum.take(file_block) |> Enum.join()
+        Stream.repeatedly(fn -> @dot end) |> Enum.take(file_block)
       end)
 
     join(numbers, dots)
   end
 
-  defp join(numbers, dots, s \\ "")
+  defp join(numbers, dots, s \\ [])
 
   defp join([n], [], s) do
-    s <> n
+    [n | s] |> Enum.reverse() |> List.flatten()
   end
 
   defp join([n | numbers], [d | dots], s) do
-    join(numbers, dots, s <> n <> d)
+    join(numbers, dots, [d | [n | s]])
   end
 
   def compact(id) do
-    String.split(id, "", trim: true)
+    id
     |> Enum.map(&maybe_parse_integer/1)
     |> do_compact()
   end
 
-  defp maybe_parse_integer("."), do: "."
-  defp maybe_parse_integer(d), do: String.to_integer(d)
+  defp maybe_parse_integer(@dot), do: @dot
+  defp maybe_parse_integer(d), do: d
 
   defp do_compact(id_digits, numbers \\ [], dots \\ [])
 
-  defp do_compact([], numbers, dots) do
-    if IEx.started?() do
-      numbers
-    else
-      nms = Enum.join(numbers, "")
-      dts = Enum.join(dots, "")
-      nms <> dts
-    end
+  defp do_compact([], [nil | rest], _dots) do
+    Enum.reverse(rest)
+  end
+
+  defp do_compact([], numbers, _dots) do
+    Enum.reverse(numbers)
   end
 
   defp do_compact([first | rest], numbers, dots) do
-    if first in 0..9 do
-      do_compact(rest, numbers ++ [first], dots)
-    else
+    if first == @dot do
       {last, new_rest} = List.pop_at(rest, -1)
 
       if last == @dot do
-        do_compact([first | new_rest], numbers, dots ++ [last])
+        do_compact([first | new_rest], numbers, [last | dots])
       else
-        do_compact(new_rest, numbers ++ [last], dots ++ [@dot])
+        do_compact(new_rest, [last | numbers], [@dot | dots])
       end
+    else
+      do_compact(rest, [first | numbers], dots)
     end
-  end
-
-  def filesystem_checksum(compacted_blocks) when is_binary(compacted_blocks) do
-    Regex.scan(~r/\d/, compacted_blocks)
-    |> List.flatten()
-    |> Enum.map(&String.to_integer/1)
-    |> filesystem_checksum()
   end
 
   def filesystem_checksum(compacted_blocks) do
