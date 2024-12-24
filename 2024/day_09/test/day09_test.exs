@@ -7,6 +7,7 @@ defmodule Day09Test do
   end
 
   # this takes about 35 seconds on my Dell.
+  # this takes about 12 seconds on my M2 Air.
   # test "part 1" do
   #   assert Day09.part1("input.txt") == 6_340_197_768_906
   # end
