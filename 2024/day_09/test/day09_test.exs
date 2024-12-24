@@ -6,6 +6,10 @@ defmodule Day09Test do
     assert Day09.part1("example.txt") == 1928
   end
 
+  # test "part 1" do
+    # assert Day09.part1("input.txt") == 1928
+  # end
+
   test "id/1" do
     assert Day09.id("12345") == "0..111....22222"
     assert Day09.id("2333133121414131402") == "00...111...2...333.44.5555.6666.777.888899"

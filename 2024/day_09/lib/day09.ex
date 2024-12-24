@@ -8,15 +8,6 @@ defmodule Day09 do
   end
 
   def id(disk_map) do
-    String.split(disk_map, "", trim: true)
-    |> Enum.map(&String.to_integer/1)
-    |> Enum.with_index(fn n, i ->
-      {i, n}
-
-      d = if Integer.mod(i, 2) == 1, do: @dot, else: i
-      Stream.repeatedly(fn -> d end) |> Enum.take(n) |> Enum.join()
-    end)
-
     %{files: files, free_space: free_space} =
       String.split(disk_map, "", trim: true)
       |> Enum.map(&String.to_integer/1)
@@ -54,19 +45,19 @@ defmodule Day09 do
     |> do_compact()
   end
 
-  defp maybe_parse_integer(d) do
-    case Integer.parse(d) do
-      {i, _} -> i
-      _ -> d
-    end
-  end
+  defp maybe_parse_integer("."), do: "."
+  defp maybe_parse_integer(d), do: String.to_integer(d)
 
   defp do_compact(id_digits, numbers \\ [], dots \\ [])
 
   defp do_compact([], numbers, dots) do
-    nms = Enum.join(numbers, "")
-    dts = Enum.join(dots, "")
-    nms <> dts
+    if IEx.started?() do
+      numbers
+    else
+      nms = Enum.join(numbers, "")
+      dts = Enum.join(dots, "")
+      nms <> dts
+    end
   end
 
   defp do_compact([first | rest], numbers, dots) do
