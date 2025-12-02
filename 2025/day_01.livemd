@@ -1,0 +1,43 @@
+# AOC 2025 Day 1
+
+## Section
+
+```elixir
+defmodule Day01 do
+  def data(:test) do
+    ~s(L68
+L30
+R48
+L5
+R60
+L55
+L1
+L99
+R14
+L82
+)
+  end
+
+  def part_01(rotations) do
+    String.trim(rotations)
+    |> String.split("\n")
+    |> Enum.map(&String.split_at(&1, 1))
+    |> Enum.map(fn {d, tick} ->
+      {d, String.to_integer(tick)}
+    end)
+    |> Enum.reduce(%{position: 50, zeroes: 0}, fn {d, tick}, acc ->
+      new_position =
+        case d do
+          "L" -> Integer.mod(acc.position - tick, 100)
+          "R" -> Integer.mod(acc.position + tick, 100)
+        end
+
+      new_zero = if new_position == 0, do: acc.zeroes + 1, else: acc.zeroes
+      %{acc | position: new_position, zeroes: new_zero}
+    end)
+  end
+end
+
+Day01.data(:test)
+|> Day01.part_01()
+```
