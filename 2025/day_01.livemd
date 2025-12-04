@@ -4,6 +4,8 @@
 
 ```elixir
 defmodule Day01 do
+  @start_position 50
+
   def data(:test) do
     ~s(L68
 L30
@@ -18,14 +20,22 @@ L82
 )
   end
 
-  def part_01(rotations) do
-    String.trim(rotations)
+  def data(:real) do
+    File.read!("data.txt")
+  end
+
+  defp prep(data) do
+    String.trim(data)
     |> String.split("\n")
     |> Enum.map(&String.split_at(&1, 1))
     |> Enum.map(fn {d, tick} ->
       {d, String.to_integer(tick)}
     end)
-    |> Enum.reduce(%{position: 50, zeroes: 0}, fn {d, tick}, acc ->
+  end
+
+  def part_01(rotations) do
+    prep(rotations)
+    |> Enum.reduce(%{position: @start_position, zeroes: 0}, fn {d, tick}, acc ->
       new_position =
         case d do
           "L" -> Integer.mod(acc.position - tick, 100)
