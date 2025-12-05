@@ -21,7 +21,7 @@ L82
   end
 
   def data(:real) do
-    File.read!("data.txt")
+    File.read!("day_01.dat")
   end
 
   defp prep(data) do
