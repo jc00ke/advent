@@ -1,0 +1,58 @@
+# AOC 2025 Day 2
+
+## Section
+
+```elixir
+defmodule Day02 do
+  def data(:test) do
+    ~s(11-22,95-115,998-1012,1188511880-1188511890,222220-222224,1698522-1698528,446443-446449,38593856-38593862,565653-565659,824824821-824824827,2121212118-2121212124)
+  end
+
+  def data(:real) do
+    File.read!("day_02.dat")
+  end
+
+  defp prep(data) do
+    String.trim(data)
+    |> String.split(",")
+    |> Enum.map(fn range ->
+      [a, b] = String.split(range, "-")
+      a = String.to_integer(a)
+      b = String.to_integer(b)
+      Range.new(a, b)
+    end)
+  end
+
+  def part_01(ranges) do
+    prep(ranges)
+    |> Enum.reduce(%{invalid_ids: []}, fn range, acc ->
+      invalid_ids =
+        Enum.filter(range, fn i ->
+          digits = Integer.digits(i)
+          l = length(digits)
+
+          if Integer.mod(l, 2) == 0 do
+            {x, y} = Enum.split(digits, div(l, 2))
+            x == y
+          end
+        end)
+
+      %{acc | invalid_ids: [invalid_ids | acc.invalid_ids]}
+    end)
+  end
+
+  def part_02(ranges) do
+    prep(ranges)
+    |> Enum.reduce(%{invalid_ids: []}, fn _range, acc ->
+      invalid_ids = []
+      %{acc | invalid_ids: [invalid_ids | acc.invalid_ids]}
+    end)
+  end
+end
+
+%{invalid_ids: invalid_ids} =
+  Day02.data(:test)
+  |> Day02.part_02()
+
+List.flatten(invalid_ids) |> Enum.sum()
+```
