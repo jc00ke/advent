@@ -1,0 +1,37 @@
+# AOC 2025 Day 3
+
+## Section
+
+```elixir
+defmodule Day03 do
+  def data(:test) do
+    ~s(987654321111111
+811111111111119
+234234234234278
+818181911112111)
+    ~s(987654321111111)
+  end
+
+  def data(:real) do
+    File.read!("day_03.dat")
+  end
+
+  defp prep(data) do
+    String.trim(data)
+    |> String.split("\n")
+    |> Enum.map(&(String.to_integer(&1) |> Integer.digits()))
+  end
+
+  def part_01(banks) do
+    prep(banks)
+    |> Enum.map(fn bank ->
+      Enum.reduce(bank, %{first: 0, second: nil, last: 0, dir: nil}, fn _battery, acc ->
+        acc
+      end)
+    end)
+  end
+end
+
+Day03.data(:test)
+|> Day03.part_01()
+```
